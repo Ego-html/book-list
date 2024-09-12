@@ -1,0 +1,72 @@
+<div class="container mt-4">
+  <h1 class="mb-4">Book List</h1>
+
+  <button class="btn btn-primary mb-3" (click)="openAddBookModal()">Add Book</button>
+
+  <ul class="list-group">
+    <li *ngFor="let book of books" class="list-group-item d-flex justify-content-between align-items-center">
+      <div>
+        <strong>{{ book.title }}</strong> by {{ book.author }}<br>
+        <small>Year: {{ book.year }}, Pages: {{ book.pages }}</small>
+      </div>
+      <div>
+        <button class="btn btn-secondary btn-sm me-2" (click)="openEditBookModal(book)">Edit</button>
+        <button class="btn btn-danger btn-sm" (click)="onDelete(book.id)">Remove</button>
+      </div>
+    </li>
+  </ul>
+
+  <!-- Модальное окно -->
+  <div *ngIf="isModalOpen" class="modal show d-block">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">{{ isEdit ? 'Edit' : 'Add' }} Book</h4>
+          <button type="button" class="btn-close" (click)="closeModal()"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Привязываем форму через formGroup -->
+          <form [formGroup]="bookForm" (ngSubmit)="saveBook()">
+            <div class="mb-3">
+              <label for="author" class="form-label">Author</label>
+              <input type="text" id="author" formControlName="author" class="form-control" />
+              <!-- Валидация поля -->
+              <div *ngIf="bookForm.get('author')?.invalid && bookForm.get('author')?.touched" class="text-danger">
+                Author is required.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="year" class="form-label">Year</label>
+              <input type="number" id="year" formControlName="year" class="form-control" />
+              <div *ngIf="bookForm.get('year')?.invalid && bookForm.get('year')?.touched" class="text-danger">
+                Year is required and should be a positive number.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="title" class="form-label">Title</label>
+              <input type="text" id="title" formControlName="title" class="form-control" />
+              <div *ngIf="bookForm.get('title')?.invalid && bookForm.get('title')?.touched" class="text-danger">
+                Title is required.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="pages" class="form-label">Pages</label>
+              <input type="number" id="pages" formControlName="pages" class="form-control" />
+              <div *ngIf="bookForm.get('pages')?.invalid && bookForm.get('pages')?.touched" class="text-danger">
+                Pages are required and should be a positive number.
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" [disabled]="bookForm.invalid">
+              {{ isEdit ? 'Update' : 'Add' }}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
